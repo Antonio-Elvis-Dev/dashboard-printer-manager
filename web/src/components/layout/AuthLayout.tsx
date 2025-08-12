@@ -24,8 +24,11 @@ export function AuthLayout() {
         </footer>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center sm:relative">
+      <div className="flex flex-1 flex-col justify-center">
+        <div className='h-full flex items-center justify-end sm:relative mr-8'>
+
         <ThemeToggle/>
+        </div>
         <Outlet />
       </div>
     </div>
