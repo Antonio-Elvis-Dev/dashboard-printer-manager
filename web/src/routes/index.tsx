@@ -11,6 +11,10 @@ import { createBrowserRouter } from 'react-router-dom'
 import { SignIn } from '@/pages/sign-in'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import Error from '@/pages/Error'
+import SetoresPage from '@/pages/setores-pages'
+import RelatoriosPage from '@/pages/relatorios-page'
+import ConfiguracoesPage from '@/pages/configuracoes-page'
+import Dashboard from '@/pages/dashboard'
 
 // import { PrivateRoutes } from './private-routes'
 // import { FilterPanel } from '../pages/filter-panels'
@@ -33,15 +37,17 @@ const routes = [
   {
     path: '/',
     element: (
-      <PrivateRoutes>
+      // :<PrivateRoutes>
         <AppLayout />
-      </PrivateRoutes>
+      // </PrivateRoutes>
     ),
     errorElement:<Error/>,
     children: [
-      { path: '/', element: <Home /> },
-      // { path: '/filter-media', element: <FilterMedia /> },
-      // { path: '/filter-panel', element: <FilterPanel /> },
+      { path: '/', element: <Dashboard /> },
+      { path: '/setores', element: <SetoresPage /> },
+      { path: '/relatorios', element: <RelatoriosPage /> },
+      { path: '/configuracoes', element: <ConfiguracoesPage /> },
+      // { path: '/configuracoes', element: <ConfiguracoesPage /> },
     ],
   },
   // { path: '/player/:panelId', element: <PlayerPage /> },
