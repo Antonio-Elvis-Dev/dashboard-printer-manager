@@ -10,11 +10,14 @@ import { PrivateRoutes } from './private-routes'
 import { createBrowserRouter } from 'react-router-dom'
 import { SignIn } from '@/pages/sign-in'
 import { AuthLayout } from '@/components/layout/AuthLayout'
-import Error from '@/pages/Error'
+import {Error} from '@/pages/Error'
 import SetoresPage from '@/pages/setores-pages'
 import RelatoriosPage from '@/pages/relatorios-page'
 import ConfiguracoesPage from '@/pages/configuracoes-page'
 import Dashboard from '@/pages/dashboard'
+import PessoasPage from '@/pages/pessoas-page'
+import RegistrosPage from '@/pages/registros-page'
+import ImpressorasPage from '@/pages/impressoras-page'
 
 // import { PrivateRoutes } from './private-routes'
 // import { FilterPanel } from '../pages/filter-panels'
@@ -27,13 +30,7 @@ const routes = [
     errorElement:<Error/>,
     children: [{ path: '/sign-in', element: <SignIn /> }],
   },
-  // {
-  //   element: <PublicLayout />,
-  //   // errorElement:<Error/>
-  //   children: [
-  //     { path: '/public', element: <Public /> },
-  //   ],
-  // },
+ 
   {
     path: '/',
     element: (
@@ -47,10 +44,11 @@ const routes = [
       { path: '/setores', element: <SetoresPage /> },
       { path: '/relatorios', element: <RelatoriosPage /> },
       { path: '/configuracoes', element: <ConfiguracoesPage /> },
-      // { path: '/configuracoes', element: <ConfiguracoesPage /> },
+      { path: '/pessoas', element: <PessoasPage /> },
+      { path: '/registros', element: <RegistrosPage /> },
+      { path: '/impressoras', element: <ImpressorasPage /> },
     ],
   },
-  // { path: '/player/:panelId', element: <PlayerPage /> },
 ]
 
 export const router = createBrowserRouter(routes)
