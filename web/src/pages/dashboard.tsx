@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
-  Printer, 
-  Activity, 
-  Palette, 
+import {
+  Printer,
+  Activity,
+  Palette,
   Monitor,
   TrendingUp,
   Clock
 } from 'lucide-react';
-import { MetricCard } from '@/components/dashboard/metric-card';
+import { MetricCard, type MetricCardProps } from '@/components/dashboard/metric-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -52,41 +52,55 @@ export default function Dashboard() {
 
   const totalImpressoesMes = metrics.impressoesColoridoMes + metrics.impressoesPretoBrancoMes;
 
+  const printerMetricCards: MetricCardProps[] = [
+
+    {
+      title: "Total de Impressoras",
+      value: metrics.totalImpressoras,
+      icon: Printer,
+      description: `${metrics.impressorasAtivas} ativas, ${metrics.impressorasInativas} inativas`,
+      variant: "default"
+    },
+    {
+      title: "Impressoras Ativas",
+      value: metrics.impressorasAtivas,
+      icon: Activity,
+      description: `Funcionando normalmente`,
+      variant: "success"
+    },
+    {
+      title: "Impressões Coloridas",
+      value: metrics.impressoesColoridoMes.toLocaleString(),
+      icon: Palette,
+      description: `Este mês`,
+      variant: "info"
+    },
+    {
+      title: "Impressões P&B",
+      value: metrics.impressoesPretoBrancoMes.toLocaleString(),
+      icon: Monitor,
+      description: `Este mês`,
+      variant: "warning"
+    },
+  ]
+
   return (
     <div className="space-y-6">
       {/* Cards de métricas principais */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
-          title="Total de Impressoras"
-          value={metrics.totalImpressoras}
-          icon={Printer}
-          description={`${metrics.impressorasAtivas} ativas, ${metrics.impressorasInativas} inativas`}
-          variant="default"
-        />
-        
-        <MetricCard
-          title="Impressoras Ativas"
-          value={metrics.impressorasAtivas}
-          icon={Activity}
-          description="Funcionando normalmente"
-          variant="success"
-        />
-        
-        <MetricCard
-          title="Impressões Coloridas"
-          value={metrics.impressoesColoridoMes.toLocaleString()}
-          icon={Palette}
-          description="Este mês"
-          variant="info"
-        />
-        
-        <MetricCard
-          title="Impressões P&B"
-          value={metrics.impressoesPretoBrancoMes.toLocaleString()}
-          icon={Monitor}
-          description="Este mês"
-          variant="warning"
-        />
+        {
+          printerMetricCards.map((value, index) => (
+            <MetricCard
+              key={index}
+              title={value.title}
+              value={value.value}
+              icon={value.icon}
+              description={value.description}
+              variant={value.variant}
+            />
+          ))
+        }
+
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -148,15 +162,15 @@ export default function Dashboard() {
                         {registro.impressora.nome}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {formatDistanceToNow(registro.data, { 
-                          addSuffix: true, 
-                          locale: ptBR 
+                        {formatDistanceToNow(registro.data, {
+                          addSuffix: true,
+                          locale: ptBR
                         })}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Badge 
+                    <Badge
                       variant={registro.tipo === 'colorida' ? 'default' : 'secondary'}
                     >
                       {registro.tipo === 'colorida' ? 'Colorida' : 'P&B'}
@@ -229,7 +243,7 @@ function DashboardSkeleton() {
           </Card>
         ))}
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -252,7 +266,7 @@ function DashboardSkeleton() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <Skeleton className="h-6 w-48" />

@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-interface MetricCardProps {
+export interface MetricCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
