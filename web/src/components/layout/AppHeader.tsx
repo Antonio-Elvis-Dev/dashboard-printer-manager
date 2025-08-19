@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useApp } from "@/contexts/AppContext";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 
 // Mapeamento de títulos das páginas
 const pageTitles: Record<string, string> = {
@@ -57,23 +58,35 @@ export function AppHeader() {
 
         {/* Perfil do usuário */}
         {state.usuario && (
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground text-sm font-medium">
-                {state.usuario.nome.charAt(0)}
-              </span>
-            </div>
-            {/* Nome e função ocultos no mobile */}
-            <div className="hidden sm:block">
-              <p className="text-sm font-medium text-foreground">
-                {state.usuario.nome}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {state.usuario.role === "admin"
-                  ? "Administrador"
-                  : "Usuário"}
-              </p>
-            </div>
+          <div className="flex items-center space-x-2 ">
+            <Select >
+              {/* TODO - menu userl*/}
+              <SelectTrigger className=" flex flex-row gap-2 m-2 p-2 "> 
+
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                  <span className="text-primary-foreground text-sm font-medium">
+                    {state.usuario.nome.charAt(0)}
+                  </span>
+                </div>
+                {/* Nome e função ocultos no mobile */}
+                <div className="hidden sm:block">
+                  <p className="text-sm font-medium text-foreground">
+                    {state.usuario.nome}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {state.usuario.role === "admin"
+                      ? "Administrador"
+                      : "Usuário"}
+                  </p>
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+
+                <SelectItem value="Teste">Perfil</SelectItem>
+                <SelectItem value="Teste">Settings</SelectItem>
+                <SelectItem value="Teste">Sair</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         )}
       </div>
