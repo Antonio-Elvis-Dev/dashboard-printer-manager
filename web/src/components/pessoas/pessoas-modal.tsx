@@ -8,7 +8,7 @@ import { Switch } from "../ui/switch"
 import { Textarea } from "../ui/textarea"
 import { useForm } from "react-hook-form"
 
-export const PrinterModal = ({
+export const PessoasModal = ({
   isOpen,
   onOpenChange,
   mode = 'create',
@@ -19,15 +19,10 @@ export const PrinterModal = ({
   const form = useForm({
     defaultValues: defaultValues || {
       nome: '',
-      modelo: '',
-      numeroSerie: '',
       tipo: '',
       setor: '',
       status: true,
-      localizacao: '',
       observacoes: '',
-      ultimaLeitura: '',
-      leituraAtual: ''
     }
   });
 
@@ -40,13 +35,11 @@ export const PrinterModal = ({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       {
         mode === 'create' && (
-
-
           <DialogTrigger asChild>
 
             <Button className="gap-2">
               <Plus className="h-4 w-4" />
-              Nova Impressora
+              Nova Pessoa
             </Button>
           </DialogTrigger>
         )
@@ -57,65 +50,39 @@ export const PrinterModal = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Printer className="h-5 w-5" />
-            {mode === "create" ? "Cadastrar Nova Impressora" : "Editar Impressora"}
+            {mode === "create" ? "Cadastrar Nova Pessoa" : "Editar Pessoa"}
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
 
               <FormField
                 control={form.control}
                 name="nome"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome da Impressora</FormLabel>
+                    <FormLabel>Nome da Pessoa</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: HP LaserJet Pro" {...field} />
+                      <Input placeholder="Ex: Maria Julia" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="modelo"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Modelo</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: M404n" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="numeroSerie"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Número de Série</FormLabel>
+                    <FormLabel>E-mail</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: VNC4X12345" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="localizacao"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Localização</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: Sala 101" {...field} />
+                      <Input placeholder="Ex: mariajulia@teste.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -124,28 +91,6 @@ export const PrinterModal = ({
             </div>
 
             <div className="grid grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="tipo"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="pb">P&B</SelectItem>
-                        <SelectItem value="colorida">Colorida</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="setor"
@@ -193,36 +138,6 @@ export const PrinterModal = ({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="ultimaLeitura"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Última Leitura</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="0" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="leituraAtual"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Leitura Atual</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="0" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
             <FormField
               control={form.control}
               name="observacoes"
@@ -231,7 +146,7 @@ export const PrinterModal = ({
                   <FormLabel>Observações</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Informações adicionais sobre a impressora..."
+                      placeholder="Informações adicionais sobre a pessoa..."
                       className="min-h-[80px]"
                       {...field}
                     />

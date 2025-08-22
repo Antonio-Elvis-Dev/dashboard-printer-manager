@@ -1,17 +1,24 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Plus, Search, Users, Mail, Building2, Edit, Trash2 } from 'lucide-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {  Search, Users, Mail, Building2, Edit, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { mockPessoas, mockSetores } from '@/data/mockData';
-import type { Pessoa } from '@/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { PessoasSkeleton } from '@/components/skeleton/pessoas-skeleton';
+import { PessoasModal } from '@/components/pessoas/pessoas-modal';
+import { toast } from 'sonner';
+import { queryClient } from '@/lib/react-query';
 
 export default function PessoasPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSetor, setSelectedSetor] = useState<string>('');
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPeople, setSelectedPeople] = useState<string>('');
+  const [modalMode, setModalMode] = useState("create");
 
   // Simular carregamento de dados
   const { data: pessoas, isLoading } = useQuery({
@@ -36,13 +43,55 @@ export default function PessoasPage() {
 
   const filteredPessoas = pessoas?.filter(pessoa => {
     const matchesSearch = pessoa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         pessoa.email.toLowerCase().includes(searchTerm.toLowerCase());
+      pessoa.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSetor = !selectedSetor || pessoa.setorId === selectedSetor;
     return matchesSearch && matchesSetor;
   }) || [];
+  const { mutate: deletePeopleMutation } = useMutation({
+    mutationFn:async () => (console.log("Teste")),
+    onSuccess: () => {
+      toast.success("Pessoa deletada com sucesso.")
+      queryClient.invalidateQueries({ queryKey: ['pessoaList'] })
+    },
+    onError: () => {
+      toast.error("Erro ao deletar Pessoa")
+    }
+    
+  })
+  
+  
+    if (isLoading) {
+      return <PessoasSkeleton />;
+    }
+  function openEditModal(pessoa) {
+    setSelectedPeople(pessoa);
+    setModalMode("edit");
+    setIsModalOpen(true);
+  }
+  const handleDeletePeople = (pessoa: any) => {
+    if (confirm("Tem certeza que deseja deletar esta pessoa?")) {
+      deletePeopleMutation(pessoa)
+    }
+  };
 
-  if (isLoading) {
-    return <PessoasSkeleton />;
+  function handleCreatePeople(data) {
+    console.log("Criando Pessoa:", data);
+    // Chamar API de criação...
+  }
+
+  function handleEditPeople(data) {
+    console.log("Editando Pessoa:", data);
+    // Chamar API de edição...
+  }
+
+  function handleOpenChange(isOpen) {
+    setIsModalOpen(isOpen);
+
+    // Quando fechar a modal, volta para o modo de criação
+    if (!isOpen) {
+      setModalMode("create");
+      setSelectedPeople(null);
+    }
   }
 
   return (
@@ -55,10 +104,13 @@ export default function PessoasPage() {
             Gerencie as pessoas cadastradas no sistema
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          Nova Pessoa
-        </Button>
+        <PessoasModal
+          isOpen={isModalOpen}
+          onOpenChange={handleOpenChange}
+          mode={modalMode}
+          defaultValues={selectedPeople}
+          onSubmit={modalMode === 'create' ? handleCreatePeople : handleEditPeople}
+        />
       </div>
 
       {/* Filtros */}
@@ -66,7 +118,7 @@ export default function PessoasPage() {
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
-              <div className="relative">
+              <div className="relative ">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Buscar por nome ou e-mail..."
@@ -74,21 +126,28 @@ export default function PessoasPage() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
+                <Button className='absolute  right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-6 h-6 ' onClick={() => setSelectedSetor('')}><X /></Button>
               </div>
             </div>
             <div className="sm:w-48">
-              <select
-                className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                value={selectedSetor}
-                onChange={(e) => setSelectedSetor(e.target.value)}
-              >
-                <option value="">Todos os setores</option>
-                {setores?.map(setor => (
-                  <option key={setor.id} value={setor.id}>
-                    {setor.nome}
-                  </option>
-                ))}
-              </select>
+
+              <Select value={selectedSetor} onValueChange={setSelectedSetor}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todos os setores" />
+                </SelectTrigger>
+
+                <SelectContent className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                >
+                  {setores?.map(setor => (
+                    <SelectItem key={setor.id} value={setor.id}>
+                      {setor.nome}
+
+                    </SelectItem>
+                  ))}
+
+                </SelectContent>
+              </Select>
+
             </div>
           </div>
         </CardContent>
@@ -174,17 +233,22 @@ export default function PessoasPage() {
                       <p className="text-sm text-muted-foreground">{pessoa.email}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-4">
                     <Badge variant="secondary">
                       {getSetorNome(pessoa.setorId)}
                     </Badge>
-                    
+
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm"
+                        onClick={() => openEditModal(pessoa)}
+
+                      >
                         <Edit className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                      <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive"
+                        onClick={() => handleDeletePeople(pessoa)}
+                      >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
@@ -192,73 +256,6 @@ export default function PessoasPage() {
                 </div>
               ))
             )}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function PessoasSkeleton() {
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <Skeleton className="h-8 w-32 mb-2" />
-          <Skeleton className="h-4 w-64" />
-        </div>
-        <Skeleton className="h-10 w-32" />
-      </div>
-
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex gap-4">
-            <Skeleton className="h-10 flex-1" />
-            <Skeleton className="h-10 w-48" />
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {Array(3).fill(0).map((_, i) => (
-          <Card key={i}>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <Skeleton className="h-10 w-10 rounded-lg" />
-                <div>
-                  <Skeleton className="h-8 w-12 mb-1" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-6 w-32" />
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {Array(5).fill(0).map((_, i) => (
-              <div key={i} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div>
-                    <Skeleton className="h-4 w-32 mb-1" />
-                    <Skeleton className="h-3 w-48" />
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-6 w-20 rounded-full" />
-                  <div className="flex space-x-2">
-                    <Skeleton className="h-8 w-8" />
-                    <Skeleton className="h-8 w-8" />
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </CardContent>
       </Card>

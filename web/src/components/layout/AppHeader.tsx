@@ -82,9 +82,9 @@ export function AppHeader() {
               </SelectTrigger>
               <SelectContent>
 
-                <SelectItem value="Teste">Perfil</SelectItem>
-                <SelectItem value="Teste">Settings</SelectItem>
-                <SelectItem value="Teste">Sair</SelectItem>
+                <SelectItem value="profile">Perfil</SelectItem>
+                <SelectItem value="settings">Settings</SelectItem>
+                <SelectItem value="exit">Sair</SelectItem>
               </SelectContent>
             </Select>
           </div>

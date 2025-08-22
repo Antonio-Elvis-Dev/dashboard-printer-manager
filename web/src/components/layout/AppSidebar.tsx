@@ -105,7 +105,7 @@ export function AppSidebar() {
                     "flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200",
                     "hover:bg-sidebar-hover",
                     active 
-                      ? "bg-sidebar-active text-primary-foreground" 
+                      ? "bg-sidebar-active dark:text-zinc-500 border " 
                       : "text-sidebar-fg hover:text-sidebar-fg"
                   )}
                 >
